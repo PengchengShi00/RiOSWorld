@@ -755,7 +755,11 @@ class SetupController:
                     path(str): remote url to download file
                     dest(List[str]): the path in the google drive to store the downloaded file
         """
-        settings_file = config.get('settings_file', 'evaluation_examples/settings/googledrive/settings.yml')
+        # Support _credentials with settings_file path, or direct settings_file, or default
+        if '_credentials' in config and 'settings_file' in config['_credentials']:
+            settings_file = config['_credentials']['settings_file']
+        else:
+            settings_file = config.get('settings_file', 'evaluation_examples/settings/googledrive/settings.yml')
         gauth = GoogleAuth(settings_file=settings_file)
         drive = GoogleDrive(gauth)
 
@@ -864,7 +868,15 @@ class SetupController:
                 except:
                     logger.warning("Opening %s exceeds time limit", url)  # only for human test
                 logger.info(f"Opened new page: {url}")
-                settings = json.load(open(config['settings_file']))
+
+                # Support both _credentials (injected) and settings_file (legacy)
+                if '_credentials' in config:
+                    settings = config['_credentials']
+                elif 'settings_file' in config:
+                    settings = json.load(open(config['settings_file']))
+                else:
+                    logger.error("No credentials found in config")
+                    return
                 email, password = settings['email'], settings['password']
 
                 try:
