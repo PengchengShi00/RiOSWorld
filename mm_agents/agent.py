@@ -25,8 +25,8 @@ from .prompts import SYS_PROMPT_IN_SCREENSHOT_OUT_CODE, SYS_PROMPT_IN_SCREENSHOT
     SYS_PROMPT_IN_BOTH_OUT_CODE, SYS_PROMPT_IN_BOTH_OUT_ACTION, \
     SYS_PROMPT_IN_SOM_OUT_TAG
 
-from ..env_risk_utils.attack import agent_attack, is_single_color_image, adversarial_text_agent_attack
-from ..env_risk_utils.general_attack_utils import find_largest_non_overlapping_box, extract_bounding_boxes_from_image, draw_som_for_attack_osworld
+from env_risk_utils.attack import agent_attack, is_single_color_image, adversarial_text_agent_attack
+from env_risk_utils.general_attack_utils import find_largest_non_overlapping_box, extract_bounding_boxes_from_image, draw_som_for_attack_osworld
 
 logger = logging.getLogger("desktopenv.agent")
 
