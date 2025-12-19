@@ -20,9 +20,9 @@ RETRY_INTERVAL = 5
 UBUNTU_X86_URL = "https://huggingface.co/datasets/xlangai/ubuntu_osworld/resolve/main/Ubuntu.qcow2.zip"
 WINDOWS_X86_URL = "https://huggingface.co/datasets/xlangai/windows_osworld/resolve/main/Windows-10-x64.qcow2.zip"
 
-# 将下载目录固定在 AIEvoBox/env/osgym/docker_vm_data
-_ROOT = Path(__file__).resolve().parents[3]  # .../AIEvoBox/env/osgym
-VMS_DIR = str(_ROOT / "docker_vm_data")
+# VM 存储目录：优先使用环境变量，否则使用当前工作目录下的 env/osgym/docker_vm_data
+_DEFAULT_VM_DIR = os.path.join(os.getcwd(), "env", "osgym", "docker_vm_data")
+VMS_DIR = os.environ.get("OSGYM_VM_DIR", _DEFAULT_VM_DIR)
 
 URL = UBUNTU_X86_URL
 DOWNLOADED_FILE_NAME = URL.split('/')[-1]
