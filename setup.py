@@ -6,6 +6,15 @@ setup(
     description="RiOSWorld adapted for AIEvoBox - Desktop environment and multi-modal agents for OS automation",
     author="AIEvoBox Team",
     packages=find_packages(),
+    include_package_data=True,
+    package_data={
+        "env_risk_utils": [
+            "templates/*.html",
+            "induced_texts/*.txt",
+            "popup_logos/**/*",
+            "*.json",
+        ],
+    },
     python_requires=">=3.10",
     install_requires=[
         "gymnasium",
