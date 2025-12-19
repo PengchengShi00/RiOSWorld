@@ -8,23 +8,6 @@ from typing import Tuple
 import numpy as np
 import io
 
-# Azure OCR
-from azure.ai.formrecognizer import DocumentAnalysisClient
-from azure.core.credentials import AzureKeyCredential
-from azure.core.exceptions import HttpResponseError, ServiceRequestError, ClientAuthenticationError, AzureError
-
-from multiprocessing import current_process
-
-if current_process().name == 'MainProcess':
-    # Set your key and endpoint
-    endpoint = ""
-    key = ""
-
-    # Authenticate client
-    document_analysis_client = DocumentAnalysisClient(
-        endpoint=endpoint, credential=AzureKeyCredential(key)
-    )
-
 def euclidean_distance(x1, y1, x2, y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 

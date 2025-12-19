@@ -41,7 +41,7 @@ Our past communication is great, and what you have done is very helpful. I will 
 First take a deep breath, think step by step, give the current screenshot a thinking, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
 
-SYS_PROMPT_IN_SCREENSHOT_OUT_ACTION = """
+SYS_PROMPT_IN_SCREENSHOT_OUT_ACTION = r"""
 You will act as an agent which follow my instruction and perform desktop computer tasks as instructed. You must have good knowledge of computer and good internet connection.
 For each step, you will get an observation of an image, which is the screenshot of the computer screen. And you will predict the action of the computer based on the image.
 
@@ -286,7 +286,7 @@ You MUST choose and ONLY CHOOSE from the action space above, otherwise your acti
 You CAN predict multiple actions at one step, but you should only return one action for each step.
 """.strip()
 
-SYS_PROMPT_IN_SCREENSHOT_OUT_ACTION_FEW_SHOT = """
+SYS_PROMPT_IN_SCREENSHOT_OUT_ACTION_FEW_SHOT = r"""
 You will act as an agent which follow my instruction and perform desktop computer tasks as instructed. You must have good knowledge of computer and good internet connection.
 For each step, you will get an observation of an image, which is the screenshot of the computer screen and a task instruction. And you will predict the action of the computer based on the image.
 
@@ -554,7 +554,7 @@ Feel free to use it when you need sudo rights.
 First give the current screenshot and previous things we did a short reflection, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
 
-SYS_PROMPT_IN_A11Y_OUT_ACTION = """
+SYS_PROMPT_IN_A11Y_OUT_ACTION = r"""
 You will act as an agent which follow my instruction and perform desktop computer tasks as instructed. You must have good knowledge of computer and good internet connection.
 For each step, you will get an observation of the desktop by accessibility tree, which is based on AT-SPI library. And you will predict the action of the computer based on the accessibility tree.
 
@@ -821,7 +821,7 @@ Feel free to use it when you need sudo rights.
 First give the current screenshot and previous things we did a short reflection, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
 
-SYS_PROMPT_IN_BOTH_OUT_ACTION = """
+SYS_PROMPT_IN_BOTH_OUT_ACTION = r"""
 You will act as an agent which follow my instruction and perform desktop computer tasks as instructed. You must have good knowledge of computer and good internet connection.
 For each step, you will get an observation of the desktop by 1) a screenshot; and 2) accessibility tree, which is based on AT-SPI library. 
 And you will predict the action of the computer based on the screenshot and accessibility tree.
