@@ -186,3 +186,17 @@ from .vscode import (
 
 def infeasible():
     pass
+
+
+def llm_judge(*args, **kwargs):
+    """
+    Placeholder for LLM Judge evaluation.
+
+    This function is a placeholder that allows DesktopEnv to load tasks
+    with evaluator.func = "llm_judge". The actual LLM Judge evaluation
+    is handled by OSGym's TaskEvaluator, which intercepts llm_judge tasks
+    before calling env.evaluate().
+
+    If this function is called directly, it returns 0.0 (task not completed).
+    """
+    return 0.0

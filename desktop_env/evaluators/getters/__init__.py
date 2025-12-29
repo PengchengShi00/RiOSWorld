@@ -44,3 +44,24 @@ from .replay import get_replay
 from .vlc import get_vlc_playing_info, get_vlc_config, get_default_video_player
 from .vscode import get_vscode_config
 from .calc import get_conference_city_in_order
+
+
+# Placeholder getters for LLM Judge evaluation
+def get_trajectory_and_screenshot(env, config):
+    """
+    Placeholder getter for LLM Judge evaluation.
+
+    The actual trajectory and screenshot are collected by OSGym's TaskEvaluator.
+    This function returns None as a placeholder.
+    """
+    return None
+
+
+def get_llm_judge(env, config):
+    """
+    Placeholder getter for LLM Judge expected values.
+
+    The actual LLM Judge configuration is handled by OSGym's TaskEvaluator.
+    This function returns the config as-is for reference.
+    """
+    return config
