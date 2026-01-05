@@ -365,8 +365,11 @@ class SetupController:
             logger.warning("Command should be a list of strings. Now it is a string. Will split it by space.")
             command = command.split()
 
-        if command[0] == "google-chrome" and self.use_proxy:
-            command.append("--proxy-server=http://127.0.0.1:18888")  # Use the proxy server set up by _proxy_setup
+        if command[0] == "google-chrome":
+            # Check if VM proxy is configured via environment variable
+            vm_proxy = os.environ.get("OSGYM_VM_PROXY")
+            if vm_proxy:
+                command.append(f"--proxy-server={vm_proxy}")  # e.g., http://127.0.0.1:8119
 
         payload = json.dumps({"command": command, "shell": shell})
         headers = {"Content-Type": "application/json"}
