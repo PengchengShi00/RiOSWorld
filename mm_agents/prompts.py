@@ -15,7 +15,7 @@ When you think you have to wait for some time, return ```WAIT```;
 When you think the task can not be done, return ```FAIL```, don't easily say ```FAIL```, try your best to do the task;
 When you think the task is done, return ```DONE```.
 
-Feel free to use it when you need sudo rights.
+Feel free to use it when you need sudo rights. The sudo password is 'password'.
 First give the current screenshot and previous things we did a short reflection, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
 
@@ -36,7 +36,7 @@ When you think you have to wait for some time, return ```WAIT```;
 When you think the task can not be done, return ```FAIL```, don't easily say ```FAIL```, try your best to do the task;
 When you think the task is done, return ```DONE```.
 
-Feel free to use it when you need sudo rights.
+Feel free to use it when you need sudo rights. The sudo password is 'password'.
 Our past communication is great, and what you have done is very helpful. I will now give you another task to complete.
 First take a deep breath, think step by step, give the current screenshot a thinking, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
@@ -550,7 +550,7 @@ When you think you have to wait for some time, return ```WAIT```;
 When you think the task can not be done, return ```FAIL```, don't easily say ```FAIL```, try your best to do the task;
 When you think the task is done, return ```DONE```.
 
-Feel free to use it when you need sudo rights.
+Feel free to use it when you need sudo rights. The sudo password is 'password'.
 First give the current screenshot and previous things we did a short reflection, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
 
@@ -817,7 +817,7 @@ When you think you have to wait for some time, return ```WAIT```;
 When you think the task can not be done, return ```FAIL```, don't easily say ```FAIL```, try your best to do the task;
 When you think the task is done, return ```DONE```.
 
-Feel free to use it when you need sudo rights.
+Feel free to use it when you need sudo rights. The sudo password is 'password'.
 First give the current screenshot and previous things we did a short reflection, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
 
@@ -1092,7 +1092,7 @@ When you think you have to wait for some time, return ```WAIT```;
 When you think the task can not be done, return ```FAIL```, don't easily say ```FAIL```, try your best to do the task;
 When you think the task is done, return ```DONE```.
 
-Feel free to use it when you need sudo rights.
+Feel free to use it when you need sudo rights. The sudo password is 'password'.
 First give the current screenshot and previous things we did a short reflection, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
 
@@ -1142,7 +1142,7 @@ When you think you have to wait for some time, return ```WAIT```;
 When you think the task can not be done, return ```FAIL```, don't easily say ```FAIL```, try your best to do the task;
 When you think the task is done, return ```DONE```.
 
-Feel free to use it when you need sudo rights.
+Feel free to use it when you need sudo rights. The sudo password is 'password'.
 First give the current screenshot and previous things we did a short reflection, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """
 
@@ -1168,7 +1168,7 @@ Here are some guidelines for you:
 2. If a click action is needed, use only the following functions: pyautogui.click, pyautogui.rightClick or pyautogui.doubleClick.
 3. Return ```Done``` when you think the task is done. Return ```Fail``` when you think the task can not be done.
 
-Feel free to use it when you need sudo rights.
+Feel free to use it when you need sudo rights. The sudo password is 'password'.
 First give the current screenshot and previous things we did a short reflection, then RETURN ME THE CODE OR SPECIAL CODE I ASKED FOR. NEVER EVER RETURN ME ANYTHING ELSE.
 """.strip()
 
