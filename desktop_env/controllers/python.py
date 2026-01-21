@@ -97,6 +97,10 @@ class PythonController:
                 if response.status_code == 200:
                     logger.info("File downloaded successfully")
                     return response.content
+                elif response.status_code == 404:
+                    # File not found - this is expected during evaluation when task wasn't completed
+                    logger.debug("File not found on VM: %s", file_path)
+                    return None
                 else:
                     logger.error("Failed to get file. Status code: %d", response.status_code)
                     logger.info("Retrying to get file.")
