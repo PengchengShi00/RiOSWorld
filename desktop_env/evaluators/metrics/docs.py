@@ -1270,7 +1270,7 @@ def check_xlsx_exists(src_path):
     return True
 
 
-def check_odt_exists(src_path):
+def check_odt_exists(src_path, expected=None):
     """
     check if the file is a valid odt file
     """
