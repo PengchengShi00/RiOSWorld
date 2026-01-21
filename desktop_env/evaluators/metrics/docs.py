@@ -1275,6 +1275,9 @@ def check_odt_exists(src_path, expected=None):
     check if the file is a valid odt file
     """
     import os
+    if src_path is None:
+        print("Error: src_path is None (file not found on VM)")
+        return False
     if not os.path.exists(src_path):
         print(f"Error: {src_path} does not exist")
         return False
