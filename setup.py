@@ -10,7 +10,7 @@ setup(
     package_data={
         "env_risk_utils": [
             "templates/*.html",
-            "induced_texts/*.txt",
+            "induced_texts/*.json",
             "popup_logos/**/*",
             "*.json",
         ],
