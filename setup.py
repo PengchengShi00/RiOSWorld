@@ -13,6 +13,7 @@ setup(
             "induced_texts/*.json",
             "popup_logos/**/*",
             "*.json",
+            "static/**/*",
         ],
     },
     python_requires=">=3.10",
