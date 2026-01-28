@@ -43,6 +43,31 @@ PROXY_CONFIG_FILE = os.getenv("PROXY_CONFIG_FILE", "evaluation_examples/settings
 
 logger = logging.getLogger("desktopenv.setup")
 
+
+def _load_url_mapping() -> Dict[str, str]:
+    """Load URL to local filename mapping from env/osgym/files/url_mapping.json."""
+    # Try multiple possible locations for url_mapping.json
+    mapping_paths = [
+        "/root/AIEvoBox/env/osgym/files/url_mapping.json",
+        os.path.join(os.getcwd(), "env", "osgym", "files", "url_mapping.json"),
+    ]
+    for mapping_path in mapping_paths:
+        if os.path.exists(mapping_path):
+            try:
+                with open(mapping_path, 'r') as f:
+                    mapping = json.load(f)
+                logging.getLogger("desktopenv.setup").info(
+                    f"Loaded {len(mapping)} URL mappings from {mapping_path}"
+                )
+                return mapping
+            except Exception as e:
+                logging.getLogger("desktopenv.setup").warning(f"Failed to load URL mapping from {mapping_path}: {e}")
+    return {}
+
+
+# Load URL mapping at module load time
+_url_to_local_file: Dict[str, str] = _load_url_mapping()
+
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Initialize proxy pool only if available
@@ -174,6 +199,13 @@ class SetupController:
                 "path": str, the path on the VM to store the downloaded file
               }
         """
+        # Default local files directory: env/osgym/files relative to project root
+        # Try multiple possible locations
+        local_files_dirs = [
+            "/root/AIEvoBox/env/osgym/files",  # absolute path in container
+            os.path.join(os.getcwd(), "env", "osgym", "files"),  # relative to cwd
+        ]
+
         for f in files:
             url: str = f["url"]
             path: str = f["path"]
@@ -184,43 +216,58 @@ class SetupController:
                 raise Exception(f"Setup Download - Invalid URL ({url}) or path ({path}).")
 
             if not os.path.exists(cache_path):
-                logger.info(f"Cache file not found, downloading from {url} to {cache_path}")
-                max_retries = 3
-                downloaded = False
-                e = None
-                for i in range(max_retries):
-                    try:
-                        logger.info(f"Download attempt {i+1}/{max_retries} for {url}")
-                        response = requests.get(url, stream=True, timeout=300)  # Add 5 minute timeout
-                        response.raise_for_status()
-                        
-                        # Get file size if available
-                        total_size = int(response.headers.get('content-length', 0))
-                        if total_size > 0:
-                            logger.info(f"File size: {total_size / (1024*1024):.2f} MB")
+                # First, try to find the file in local pre-downloaded directory using URL mapping
+                local_file_found = False
+                if url in _url_to_local_file:
+                    local_filename = _url_to_local_file[url]
+                    for local_dir in local_files_dirs:
+                        local_file_path = os.path.join(local_dir, local_filename)
+                        if os.path.exists(local_file_path):
+                            logger.info(f"Using pre-downloaded file: {local_file_path}")
+                            shutil.copy(local_file_path, cache_path)
+                            local_file_found = True
+                            logger.info(f"Copied local file to cache: {cache_path}")
+                            break
 
-                        downloaded_size = 0
-                        with open(cache_path, 'wb') as f:
-                            for chunk in response.iter_content(chunk_size=8192):
-                                if chunk:
-                                    f.write(chunk)
-                                    downloaded_size += len(chunk)
-                                    if total_size > 0 and downloaded_size % (1024*1024) == 0:  # Log every MB
-                                        progress = (downloaded_size / total_size) * 100
-                                        logger.info(f"Download progress: {progress:.1f}%")
-                        
-                        logger.info(f"File downloaded successfully to {cache_path} ({downloaded_size / (1024*1024):.2f} MB)")
-                        downloaded = True
-                        break
+                # If not found locally, download from URL
+                if not local_file_found:
+                    logger.info(f"Cache file not found, downloading from {url} to {cache_path}")
+                    max_retries = 3
+                    downloaded = False
+                    e = None
+                    for i in range(max_retries):
+                        try:
+                            logger.info(f"Download attempt {i+1}/{max_retries} for {url}")
+                            response = requests.get(url, stream=True, timeout=300)  # Add 5 minute timeout
+                            response.raise_for_status()
 
-                    except requests.RequestException as e:
-                        logger.error(
-                            f"Failed to download {url} caused by {e}. Retrying... ({max_retries - i - 1} attempts left)")
-                        # Clean up partial download
-                        if os.path.exists(cache_path):
-                            os.remove(cache_path)
-                if not downloaded:
-                    raise requests.RequestException(f"Failed to download {url}. No retries left.")
+                            # Get file size if available
+                            total_size = int(response.headers.get('content-length', 0))
+                            if total_size > 0:
+                                logger.info(f"File size: {total_size / (1024*1024):.2f} MB")
+
+                            downloaded_size = 0
+                            with open(cache_path, 'wb') as f:
+                                for chunk in response.iter_content(chunk_size=8192):
+                                    if chunk:
+                                        f.write(chunk)
+                                        downloaded_size += len(chunk)
+                                        if total_size > 0 and downloaded_size % (1024*1024) == 0:  # Log every MB
+                                            progress = (downloaded_size / total_size) * 100
+                                            logger.info(f"Download progress: {progress:.1f}%")
+
+                            logger.info(f"File downloaded successfully to {cache_path} ({downloaded_size / (1024*1024):.2f} MB)")
+                            downloaded = True
+                            break
+
+                        except requests.RequestException as e:
+                            logger.error(
+                                f"Failed to download {url} caused by {e}. Retrying... ({max_retries - i - 1} attempts left)")
+                            # Clean up partial download
+                            if os.path.exists(cache_path):
+                                os.remove(cache_path)
+                    if not downloaded:
+                        raise requests.RequestException(f"Failed to download {url}. No retries left.")
 
             form = MultipartEncoder({
                 "file_path": path,
