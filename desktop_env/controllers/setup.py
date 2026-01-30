@@ -44,8 +44,12 @@ PROXY_CONFIG_FILE = os.getenv("PROXY_CONFIG_FILE", "evaluation_examples/settings
 logger = logging.getLogger("desktopenv.setup")
 
 
-def _load_url_mapping() -> Dict[str, str]:
-    """Load URL to local filename mapping from env/osgym/files/url_mapping.json."""
+def _load_url_mapping() -> tuple:
+    """Load URL to local filename mapping from env/osgym/files/url_mapping.json.
+
+    Returns:
+        tuple: (mapping_dict, files_dir) where files_dir is the directory containing the mapping file
+    """
     # Try multiple possible locations for url_mapping.json
     mapping_paths = [
         "/root/AIEvoBox/env/osgym/files/url_mapping.json",
@@ -56,17 +60,18 @@ def _load_url_mapping() -> Dict[str, str]:
             try:
                 with open(mapping_path, 'r') as f:
                     mapping = json.load(f)
+                files_dir = os.path.dirname(mapping_path)
                 logging.getLogger("desktopenv.setup").info(
                     f"Loaded {len(mapping)} URL mappings from {mapping_path}"
                 )
-                return mapping
+                return mapping, files_dir
             except Exception as e:
                 logging.getLogger("desktopenv.setup").warning(f"Failed to load URL mapping from {mapping_path}: {e}")
-    return {}
+    return {}, None
 
 
 # Load URL mapping at module load time
-_url_to_local_file: Dict[str, str] = _load_url_mapping()
+_url_to_local_file, _local_files_dir = _load_url_mapping()
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -199,13 +204,6 @@ class SetupController:
                 "path": str, the path on the VM to store the downloaded file
               }
         """
-        # Default local files directory: env/osgym/files relative to project root
-        # Try multiple possible locations
-        local_files_dirs = [
-            "/root/AIEvoBox/env/osgym/files",  # absolute path in container
-            os.path.join(os.getcwd(), "env", "osgym", "files"),  # relative to cwd
-        ]
-
         for f in files:
             url: str = f["url"]
             path: str = f["path"]
@@ -218,16 +216,14 @@ class SetupController:
             if not os.path.exists(cache_path):
                 # First, try to find the file in local pre-downloaded directory using URL mapping
                 local_file_found = False
-                if url in _url_to_local_file:
+                if url in _url_to_local_file and _local_files_dir:
                     local_filename = _url_to_local_file[url]
-                    for local_dir in local_files_dirs:
-                        local_file_path = os.path.join(local_dir, local_filename)
-                        if os.path.exists(local_file_path):
-                            logger.info(f"Using pre-downloaded file: {local_file_path}")
-                            shutil.copy(local_file_path, cache_path)
-                            local_file_found = True
-                            logger.info(f"Copied local file to cache: {cache_path}")
-                            break
+                    local_file_path = os.path.join(_local_files_dir, local_filename)
+                    if os.path.exists(local_file_path):
+                        logger.info(f"Using pre-downloaded file: {local_file_path}")
+                        shutil.copy(local_file_path, cache_path)
+                        local_file_found = True
+                        logger.info(f"Copied local file to cache: {cache_path}")
 
                 # If not found locally, download from URL
                 if not local_file_found:
