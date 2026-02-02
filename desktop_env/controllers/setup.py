@@ -54,7 +54,13 @@ def _load_url_mapping() -> tuple:
     mapping_paths = [
         "/root/AIEvoBox/env/osgym/files/url_mapping.json",
         os.path.join(os.getcwd(), "env", "osgym", "files", "url_mapping.json"),
+        "/mnt/shared-storage-user/evobox-share/zhangyang/projects/AIEvoBox/env/osgym/files/url_mapping.json",
     ]
+    # Also check environment variable for custom path
+    env_files_dir = os.environ.get("OSGYM_FILES_DIR")
+    if env_files_dir:
+        mapping_paths.insert(0, os.path.join(env_files_dir, "url_mapping.json"))
+
     for mapping_path in mapping_paths:
         if os.path.exists(mapping_path):
             try:
