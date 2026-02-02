@@ -415,12 +415,11 @@ class SetupController:
             command = command.split()
 
         if command[0] == "google-chrome":
-            # Check if VM proxy is configured via environment variable
-            vm_proxy = os.environ.get("OSGYM_VM_PROXY")
-            if vm_proxy:
-                command.append(f"--proxy-server={vm_proxy}")  # e.g., http://127.0.0.1:8119
-                # Bypass proxy for local addresses (Docker host IP, localhost, etc.)
-                command.append("--proxy-bypass-list=172.17.0.1;localhost;127.0.0.1;10.*;192.168.*")
+            # Use VM proxy for Chrome (default to http://127.0.0.1:8119 if not set)
+            vm_proxy = os.environ.get("OSGYM_VM_PROXY", "http://127.0.0.1:8119")
+            command.append(f"--proxy-server={vm_proxy}")
+            # Bypass proxy for local addresses (Docker host IP, localhost, etc.)
+            command.append("--proxy-bypass-list=172.17.0.1;localhost;127.0.0.1;10.*;192.168.*")
 
         payload = json.dumps({"command": command, "shell": shell})
         headers = {"Content-Type": "application/json"}
