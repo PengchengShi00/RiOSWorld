@@ -20,9 +20,32 @@ RETRY_INTERVAL = 5
 UBUNTU_X86_URL = "https://huggingface.co/datasets/xlangai/ubuntu_osworld/resolve/main/Ubuntu.qcow2.zip"
 WINDOWS_X86_URL = "https://huggingface.co/datasets/xlangai/windows_osworld/resolve/main/Windows-10-x64.qcow2.zip"
 
-# VM 存储目录：优先使用环境变量，否则使用当前工作目录下的 env/osgym/docker_vm_data
-_DEFAULT_VM_DIR = os.path.join(os.getcwd(), "env", "osgym", "docker_vm_data")
-VMS_DIR = os.environ.get("OSGYM_VM_DIR", _DEFAULT_VM_DIR)
+# VM 存储目录：尝试多个可能的路径
+def _find_vm_dir() -> str:
+    """查找 VM 存储目录，按优先级尝试多个路径"""
+    # 优先使用环境变量
+    env_vm_dir = os.environ.get("OSGYM_VM_DIR")
+    if env_vm_dir and os.path.exists(env_vm_dir):
+        return env_vm_dir
+
+    # 尝试多个可能的路径
+    candidate_paths = [
+        "/root/AIEvoBox/env/osgym/docker_vm_data",  # 容器内路径
+        os.path.join(os.getcwd(), "env", "osgym", "docker_vm_data"),  # 当前工作目录
+        "/mnt/shared-storage-user/evobox-share/zhangyang/projects/AIEvoBox/env/osgym/docker_vm_data",  # 共享存储路径
+    ]
+
+    for path in candidate_paths:
+        if os.path.exists(path):
+            logger.info(f"Found VM directory at: {path}")
+            return path
+
+    # 如果都不存在，返回第一个候选路径（会在下载时创建）
+    default_path = candidate_paths[0]
+    logger.warning(f"No existing VM directory found, will use: {default_path}")
+    return default_path
+
+VMS_DIR = _find_vm_dir()
 
 URL = UBUNTU_X86_URL
 DOWNLOADED_FILE_NAME = URL.split('/')[-1]
