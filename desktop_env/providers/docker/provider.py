@@ -154,16 +154,24 @@ class DockerProvider(Provider):
 
     def stop_emulator(self, path_to_vm: str):
         if self.container:
-            logger.info("Stopping VM...")
+            container_id = self.container.id[:12]
+            logger.info(f"Stopping VM (container {container_id})...")
             try:
-                self.container.stop()
-                self.container.remove()
-                time.sleep(WAIT_TIME)
+                self.container.stop(timeout=10)
             except Exception as e:
-                logger.error(f"Error stopping container: {e}")
-            finally:
-                self.container = None
-                self.server_port = None
-                self.vnc_port = None
-                self.chromium_port = None
-                self.vlc_port = None
+                logger.warning(f"container.stop() failed for {container_id}: {e}, trying kill...")
+                try:
+                    self.container.kill()
+                except Exception:
+                    pass
+            try:
+                self.container.remove(force=True)
+                logger.info(f"Removed container {container_id}")
+            except Exception as e:
+                logger.error(f"container.remove(force=True) failed for {container_id}: {e}")
+            time.sleep(WAIT_TIME)
+            self.container = None
+            self.server_port = None
+            self.vnc_port = None
+            self.chromium_port = None
+            self.vlc_port = None
