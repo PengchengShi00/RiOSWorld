@@ -111,6 +111,7 @@ class DesktopEnv(gym.Env):
             os_type: str = "Ubuntu",
             enable_proxy: bool = False,
             client_password: str = "",
+            host_ip: str = None
     ):
         """
         Args:
@@ -148,10 +149,11 @@ class DesktopEnv(gym.Env):
         self.chromium_port = 9222
         self.vnc_port = 8006
         self.vlc_port = 8080
-        
+        self.host_ip = host_ip
+
         # Initialize with default (no proxy) provider
         self.current_use_proxy = False
-        self.manager, self.provider = create_vm_manager_and_provider(provider_name, region, use_proxy=False)
+        self.manager, self.provider = create_vm_manager_and_provider(provider_name, region, use_proxy=False, host_ip=host_ip)
 
         self.os_type = os_type
 
@@ -162,8 +164,10 @@ class DesktopEnv(gym.Env):
             self.is_environment_used = False
         elif self.provider_name in {"vmware"}:
             self.is_environment_used = True
+        elif self.provider_name in {"containerd"}:
+            self.is_environment_used = True
         else:
-            raise ValueError(f"Invalid provider name: {self.provider_name}. Only 'docker' and 'vmware' are supported.")
+            raise ValueError(f"Invalid provider name: {self.provider_name}. Only 'docker', 'vmware', and 'containerd' are supported.")
 
         # Initialize environment variables
         if path_to_vm:

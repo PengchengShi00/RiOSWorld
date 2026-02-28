@@ -1,7 +1,7 @@
 from desktop_env.providers.base import VMManager, Provider
 
 
-def create_vm_manager_and_provider(provider_name: str, region: str, use_proxy: bool = False):
+def create_vm_manager_and_provider(provider_name: str, region: str, use_proxy: bool = False, host_ip: str = None):
     """
     Factory function to get the Virtual Machine Manager and Provider instances based on the provided provider name.
 
@@ -19,5 +19,9 @@ def create_vm_manager_and_provider(provider_name: str, region: str, use_proxy: b
         from desktop_env.providers.docker.manager import DockerVMManager
         from desktop_env.providers.docker.provider import DockerProvider
         return DockerVMManager(), DockerProvider(region)
+    elif provider_name == "containerd":
+        from desktop_env.providers.docker.manager import DockerVMManager
+        from desktop_env.providers.contained.provider import ContainerdProvider
+        return DockerVMManager(), ContainerdProvider(region, host_ip=host_ip)
     else:
         raise NotImplementedError(f"{provider_name} not implemented! Only 'docker' and 'vmware' are supported.")
